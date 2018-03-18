@@ -2,6 +2,7 @@ package com.example.maria.controller;
 
 import android.os.AsyncTask;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -11,18 +12,32 @@ import java.net.Socket;
 
 public class Client extends AsyncTask<Void, Void,Void> {
 
-    String response = "";
+    String move = "";
     Socket socket;
+    DataOutputStream out;
 
     @Override
     protected Void doInBackground(Void... voids) {
         try{
             socket = new Socket("192.168.1.65",5656);
+            out = new DataOutputStream(socket.getOutputStream());
         }
         catch(IOException e){
             e.printStackTrace();
         }
-        return null;
+
+        while(true){
+            try {
+                out.writeUTF(move);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void setMove(String move){
+        this.move=move;
     }
 }
 

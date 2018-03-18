@@ -55,31 +55,58 @@ public class MainActivity extends AppCompatActivity {
                     int direction = js.get8Direction();
                     if (direction == JoyStickClass.STICK_UP) {
                         textView5.setText("Direction : Up");
-                        client.setMove("Direction : Up");
+                        client.setUp(true);
+                        client.setRight(false);
+                        client.setLeft(false);
+                        client.setDown(false);
                     } else if (direction == JoyStickClass.STICK_UPRIGHT) {
                         textView5.setText("Direction : Up Right");
-                        client.setMove("Direction : Up Right");
+                        client.setUp(true);
+                        client.setRight(true);
+                        client.setLeft(false);
+                        client.setDown(false);
                     } else if (direction == JoyStickClass.STICK_RIGHT) {
                         textView5.setText("Direction : Right");
-                        client.setMove("Direction : Right");
+                        client.setUp(false);
+                        client.setRight(true);
+                        client.setLeft(false);
+                        client.setDown(false);
                     } else if (direction == JoyStickClass.STICK_DOWNRIGHT) {
                         textView5.setText("Direction : Down Right");
-                        client.setMove("Direction : Down Right");
+                        client.setUp(false);
+                        client.setRight(true);
+                        client.setLeft(false);
+                        client.setDown(true);
                     } else if (direction == JoyStickClass.STICK_DOWN) {
                         textView5.setText("Direction : Down");
-                        client.setMove("Direction : Down");
+                        client.setUp(false);
+                        client.setRight(false);
+                        client.setLeft(false);
+                        client.setDown(true);
                     } else if (direction == JoyStickClass.STICK_DOWNLEFT) {
                         textView5.setText("Direction : Down Left");
-                        client.setMove("Direction : Down Left");
+                        client.setUp(false);
+                        client.setRight(false);
+                        client.setLeft(true);
+                        client.setDown(true);
                     } else if (direction == JoyStickClass.STICK_LEFT) {
                         textView5.setText("Direction : Left");
-                        client.setMove("Direction : Left");
+                        client.setUp(false);
+                        client.setRight(false);
+                        client.setLeft(true);
+                        client.setDown(false);
                     } else if (direction == JoyStickClass.STICK_UPLEFT) {
                         textView5.setText("Direction : Up Left");
-                        client.setMove("Direction : Up Left");
+                        client.setUp(true);
+                        client.setRight(false);
+                        client.setLeft(true);
+                        client.setDown(false);
                     } else if (direction == JoyStickClass.STICK_NONE) {
                         textView5.setText("Direction : Center");
-                        client.setMove("");
+                        client.setUp(false);
+                        client.setRight(false);
+                        client.setLeft(false);
+                        client.setDown(false);
                     }
                 } else if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     textView1.setText("X :");

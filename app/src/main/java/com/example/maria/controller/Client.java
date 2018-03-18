@@ -13,12 +13,13 @@ import java.net.Socket;
 
 public class Client extends AsyncTask<Void, Void,Void> {
 
-    String move = "";
+    boolean up, down, right, left;
     Socket socket;
     DataOutputStream out;
     DataInputStream in;
     String name;
     byte health, points;
+
 
     public Client(String name){
         this.name=name;
@@ -43,7 +44,11 @@ public class Client extends AsyncTask<Void, Void,Void> {
 
         while(true){
             try {
-                out.writeUTF(move);
+                Packet packet = new Packet(up, down, left, right);
+                out.write(packet.getByte());
+
+                health = in.readByte();
+                points = in.readByte();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -55,14 +60,28 @@ public class Client extends AsyncTask<Void, Void,Void> {
         if(socket!=null){
             try {
                 socket.close();
+                in.close();
+                out.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void setMove(String move){
-        this.move=move;
+    public void setDown(boolean down) {
+        this.down = down;
+    }
+
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
     }
 }
 

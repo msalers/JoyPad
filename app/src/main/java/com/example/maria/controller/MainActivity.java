@@ -5,14 +5,16 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button connect;
+    Button connect, disconnect;
     Client client;
     TextView textView1, textView2, textView3, textView4, textView5;
+    EditText name;
     JoyStickClass js;
     RelativeLayout layout_joystick;
 
@@ -91,14 +93,30 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //FINE JOYPAD
+        name = (EditText)findViewById(R.id.name);
 
         connect = (Button) findViewById(R.id.connect);
+
+        disconnect = (Button) findViewById(R.id.disconnect);
+        disconnect.setEnabled(false);
 
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new Client();
+                client = new Client(name.getText().toString());
                 client.execute();
+
+                connect.setEnabled(false);
+                disconnect.setEnabled(true);
+            }
+        });
+
+        disconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                client.close();
+                connect.setEnabled(true);
+                disconnect.setEnabled(false);
             }
         });
     }

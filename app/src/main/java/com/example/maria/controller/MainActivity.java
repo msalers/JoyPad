@@ -1,5 +1,7 @@
 package com.example.maria.controller;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -13,10 +15,11 @@ public class MainActivity extends AppCompatActivity {
 
     Button connect, disconnect;
     Client client;
-    TextView textView1, textView2, textView3, textView4, textView5;
+    TextView textView1, textView2, textView3, textView4, textView5, healthTxt, pointsTxt;
     EditText name;
     JoyStickClass js;
     RelativeLayout layout_joystick;
+    ClientHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
                         client.setLeft(false);
                         client.setDown(false);
                     }
+                    else{
+                        client.setUp(false);
+                        client.setRight(false);
+                        client.setLeft(false);
+                        client.setDown(false);
+                    }
                 } else if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     textView1.setText("X :");
                     textView2.setText("Y :");
@@ -120,18 +129,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //FINE JOYPAD
+        healthTxt = (TextView) findViewById(R.id.health);
+        pointsTxt = (TextView)findViewById(R.id.points);
         name = (EditText)findViewById(R.id.name);
 
         connect = (Button) findViewById(R.id.connect);
 
         disconnect = (Button) findViewById(R.id.disconnect);
         disconnect.setEnabled(false);
+        handler = new ClientHandler(this);
 
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new Client(name.getText().toString());
+                client = new Client(name.getText().toString(), handler );
                 client.execute();
+
 
                 connect.setEnabled(false);
                 disconnect.setEnabled(true);
@@ -146,5 +159,40 @@ public class MainActivity extends AppCompatActivity {
                 disconnect.setEnabled(false);
             }
         });
+    }
+
+    private void updateHealth(byte health){
+        healthTxt.setText((int) health);
+    }
+    private void updatePoints(byte points){
+        pointsTxt.setText((int) points);
+    }
+
+    public static class ClientHandler extends Handler{
+        private MainActivity parent;
+        public static final int UPDATE_HEALTH = 0;
+        public static final int UPDATE_POINTS = 1;
+
+        public ClientHandler(MainActivity parent) {
+            super();
+            this.parent = parent;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what){
+                case UPDATE_HEALTH:
+                    parent.updateHealth((byte) msg.obj);
+                    break;
+                case UPDATE_POINTS:
+                    parent.updatePoints((byte) msg.obj);
+                    break;
+                default:
+                    super.handleMessage(msg);
+            }
+
+        }
+
     }
 }

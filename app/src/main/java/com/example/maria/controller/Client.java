@@ -1,6 +1,8 @@
 package com.example.maria.controller;
 
 import android.os.AsyncTask;
+import android.os.Message;
+import android.widget.TextView;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,11 +21,22 @@ public class Client extends AsyncTask<Void, Void,Void> {
     DataInputStream in;
     String name;
     byte health, points;
+    MainActivity.ClientHandler handler;
 
 
-    public Client(String name){
-        this.name=name;
+    public Client(String name, MainActivity.ClientHandler handler) {
+        this.name = name;
+        this.handler= handler;
     }
+
+    private void sendHealth(byte health){
+        handler.sendMessage(Message.obtain(handler, MainActivity.ClientHandler.UPDATE_HEALTH, health));
+    }
+
+    private void sendPoints(byte pounts){
+        handler.sendMessage(Message.obtain(handler, MainActivity.ClientHandler.UPDATE_POINTS, points));
+    }
+
 
     @Override
     protected Void doInBackground(Void... voids) {
@@ -82,6 +95,14 @@ public class Client extends AsyncTask<Void, Void,Void> {
 
     public void setUp(boolean up) {
         this.up = up;
+    }
+
+    public byte getHealth(){
+        return health;
+    }
+
+    public byte getPoints(){
+        return points;
     }
 }
 

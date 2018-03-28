@@ -1,9 +1,13 @@
 package com.example.maria.controller;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,7 +18,7 @@ import java.net.Socket;
  * Created by maria on 18/03/2018.
  */
 
-public class Client extends AsyncTask<Void, Void,Void> {
+public class Client extends AsyncTask<String, String,String> {
 
     boolean up, down, right, left;
     Socket socket;
@@ -22,27 +26,18 @@ public class Client extends AsyncTask<Void, Void,Void> {
     DataInputStream in;
     String name;
     byte health, points;
-    MainActivity.ClientHandler handler;
     double FPS =60;
+MainActivity main;
 
 
-
-    public Client(String name, MainActivity.ClientHandler handler) {
+    public Client(String name, MainActivity main) {
         this.name = name;
-        this.handler= handler;
-    }
-
-    private void sendHealth(byte health){
-        handler.sendMessage(Message.obtain(handler, MainActivity.ClientHandler.UPDATE_HEALTH, health));
-    }
-
-    private void sendPoints(byte pounts){
-        handler.sendMessage(Message.obtain(handler, MainActivity.ClientHandler.UPDATE_POINTS, points));
+        this.main = main;
     }
 
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected String doInBackground(String... params) {
         try{
             socket = new Socket("192.168.1.65",5656);
             out = new DataOutputStream(socket.getOutputStream());
@@ -69,8 +64,12 @@ public class Client extends AsyncTask<Void, Void,Void> {
                         Packet packet = new Packet(up, down, left, right);
                         out.write(packet.getByte());
 
-                        health = in.readByte();
-                        //in.readByte();
+                        Packet.HPPacket hppack = new Packet.HPPacket(in.readByte());
+                        hppack.getHealth();
+                        int point = hppack.getPoints()*100;
+
+                        this.publishProgress("Vite:"+hppack.getHealth()+" Punti:"+ point);
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -81,6 +80,14 @@ public class Client extends AsyncTask<Void, Void,Void> {
         }
 
     }
+
+    @Override
+    protected void onProgressUpdate(String... values) {
+        super.onProgressUpdate(values);
+        TextView display = (TextView) main.findViewById(R.id.HPTxt);
+        display.setText(values[0]);
+    }
+
 
     public void close() throws IOException {
         socket.close();

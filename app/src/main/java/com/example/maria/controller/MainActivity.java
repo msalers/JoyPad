@@ -17,11 +17,10 @@ public class MainActivity extends AppCompatActivity {
 
     Button connect, disconnect;
     Client client;
-    TextView textView1, textView2, textView3, textView4, textView5, healthTxt, pointsTxt;
+    TextView textView1, textView2, textView3, textView4, textView5;
     EditText name;
     JoyStickClass js;
     RelativeLayout layout_joystick;
-    ClientHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,22 +28,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-         //JOYPAD
-         textView1 = (TextView)findViewById(R.id.textView1);
-         textView2 = (TextView)findViewById(R.id.textView2);
-         textView3 = (TextView)findViewById(R.id.textView3);
-         textView4 = (TextView)findViewById(R.id.textView4);
-         textView5 = (TextView)findViewById(R.id.textView5);
+        //JOYPAD
+        textView1 = (TextView) findViewById(R.id.textView1);
+        textView2 = (TextView) findViewById(R.id.textView2);
+        textView3 = (TextView) findViewById(R.id.textView3);
+        textView4 = (TextView) findViewById(R.id.textView4);
+        textView5 = (TextView) findViewById(R.id.textView5);
 
-         layout_joystick = (RelativeLayout)findViewById(R.id.layout_joystick);
+        layout_joystick = (RelativeLayout) findViewById(R.id.layout_joystick);
 
-         js = new JoyStickClass(getApplicationContext()
-         , layout_joystick, R.drawable.image_button);
-         js.setStickSize(150, 150);
-         js.setLayoutSize(500, 500);
-         js.setLayoutAlpha(150);
-         js.setStickAlpha(100);
-         js.setOffset(90);
+        js = new JoyStickClass(getApplicationContext()
+                , layout_joystick, R.drawable.image_button);
+        js.setStickSize(150, 150);
+        js.setLayoutSize(500, 500);
+        js.setLayoutAlpha(150);
+        js.setStickAlpha(100);
+        js.setOffset(90);
         js.setMinimumDistance(50);
 
         layout_joystick.setOnTouchListener(new View.OnTouchListener() {
@@ -112,8 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         client.setRight(false);
                         client.setLeft(false);
                         client.setDown(false);
-                    }
-                    else{
+                    } else {
                         client.setUp(false);
                         client.setRight(false);
                         client.setLeft(false);
@@ -131,20 +129,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //FINE JOYPAD
-        healthTxt = (TextView) findViewById(R.id.health);
-        pointsTxt = (TextView)findViewById(R.id.points);
-        name = (EditText)findViewById(R.id.name);
+        name = (EditText) findViewById(R.id.name);
 
         connect = (Button) findViewById(R.id.connect);
 
         disconnect = (Button) findViewById(R.id.disconnect);
         disconnect.setEnabled(false);
-        handler = new ClientHandler(this);
 
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client = new Client(name.getText().toString(), handler );
+                client = new Client(name.getText().toString(), MainActivity.this);
                 client.execute();
 
 
@@ -167,38 +162,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateHealth(byte health){
-        healthTxt.setText((int) health);
-    }
-    private void updatePoints(byte points){
-        pointsTxt.setText((int) points);
-    }
-
-    public static class ClientHandler extends Handler{
-        private MainActivity parent;
-        public static final int UPDATE_HEALTH = 0;
-        public static final int UPDATE_POINTS = 1;
-
-        public ClientHandler(MainActivity parent) {
-            super();
-            this.parent = parent;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-
-            switch (msg.what){
-                case UPDATE_HEALTH:
-                    parent.updateHealth((byte) msg.obj);
-                    break;
-                case UPDATE_POINTS:
-                    parent.updatePoints((byte) msg.obj);
-                    break;
-                default:
-                    super.handleMessage(msg);
-            }
-
-        }
-
-    }
 }

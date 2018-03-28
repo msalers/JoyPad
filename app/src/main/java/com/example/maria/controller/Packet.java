@@ -33,12 +33,12 @@ public class Packet {
         }
 
         public HPPacket(byte b) {
-            points = (byte) (b % 16);
-            health = (byte) (b >> 4);
+            points = (byte) (b % 32);
+            health = (byte) (b >> 5);
         }
 
         public byte getByte() {
-            return (byte) (health*16 + points);
+            return (byte) (health*32 + points);
         }
 
         public byte getHealth() { return health; }
